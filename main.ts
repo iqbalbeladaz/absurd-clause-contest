@@ -30,6 +30,11 @@ if (TEXT.length < 1 || TEXT.length > 200) {
 if (TEXT.trim() !== TEXT || /\n/.test(TEXT)) {
   throw new Error("entry must be one clean line with no surrounding whitespace");
 }
+// Reject control characters so the entry stays one clean printable line
+// even if the text is edited later.
+if (/[\u0000-\u001F\u007F]/.test(TEXT)) {
+  throw new Error("entry must not contain control characters");
+}
 
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, TEXT, "utf8");
